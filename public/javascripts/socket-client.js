@@ -19,9 +19,9 @@ function sendMessage() {
 	}
 
     const data = {
-	"from": from,
-	"to": sendTo,
-	"img" : img,
+		"from": from,
+		"to": sendTo,
+		"img" : img,
         "message": message,
         datetime: new Date()
     }
@@ -73,7 +73,7 @@ $("#joinroom").on('click', () => {
     if ($.trim(roomName) == '') {
         return false;
     }
-    
+
     toggleSelectChatMessage(false)
 
     $(".contact-profile img").attr("src", "https://png.pngtree.com/png-clipart/20190921/original/pngtree-group-chat-icon-png-image_4763828.jpg");
