@@ -7,9 +7,7 @@ exports.addUserConnection = (socketId, phoneNumber) => {
     } else {
         const existingUser = userConnected.get(phoneNumber);
         existingUser.socketId = socketId;
-        console.log(
-            `User reconnected: ${phoneNumber} - Updated Socket ID: ${socketId}`
-        );
+        console.log(`User reconnected: ${phoneNumber} - Updated Socket ID: ${socketId}`);
     }
 };
 
@@ -17,9 +15,7 @@ exports.deleteUserConnection = (socketId) => {
     for (const [phoneNumber, user] of userConnected.entries()) {
         if (user.socketId === socketId) {
             userConnected.delete(phoneNumber);
-            console.log(
-                `User disconnected: ${phoneNumber} - Socket ID: ${socketId}`
-            );
+            console.log(`User disconnected: ${phoneNumber} - Socket ID: ${socketId}`);
             break;
         }
     }
