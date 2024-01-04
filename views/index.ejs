@@ -123,7 +123,8 @@
 			<div class="message-input">
 				<div class="wrap">
 				<input type="text" placeholder="Write your message..." />
-				<i class="fa fa-paperclip attachment" aria-hidden="true"></i>
+				<label for="fileInput" class="fa fa-paperclip attachment" aria-hidden="true"></label>
+                <input type="file" id="fileInput" style="display: none;" onchange="selectFile(event)">
 				<button class="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
 				</div>
 			</div>

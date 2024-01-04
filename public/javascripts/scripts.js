@@ -70,3 +70,7 @@ function showUserInMainPanel(user) {
 function logout() {
     window.location.href = 'http://localhost:3000/logout';
 }
+
+function selectFile(e) {
+	$('.message-input input').val(e.target.files[0].name);
+}
