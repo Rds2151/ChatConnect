@@ -77,8 +77,17 @@ onConnected = (socket) => {
 
     socket.on("send-message", (data) => {
         const socketId = getUser(data.to)
+        if (socketId === null && data.to.startsWith("room-")) {
+            socket.to(data.to).emit("receive-message", data);
+        } else if (socketId !== null) {
+            socket.to(socketId).emit("receive-message", data);
+        }
         console.log(data)
-        socket.to(socketId).emit("receive-message", data);
+    });
+
+    socket.on("join-room", (roomName) => {
+        console.log(roomName)
+        socket.join("room-"+roomName)
     });
 };
 
