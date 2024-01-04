@@ -5,6 +5,41 @@ socket.on('connect', () => {
 	socket.emit('addPhoneNumber', from);
 });
 
+function loadChats() {
+    const from = $("#sidepanel #profile #expanded input").val();
+    let to = $(".contact-profile .small.text.d-block").text();
+
+    socket.emit('load-message', {from,to}, (data) => {
+        let img = data.img
+        for (chat of data) {
+            let formattedTime = moment(chat.datetime).format('hh:mm A');
+            
+            if (from == chat.from) {
+                $(`
+                    <li class="replies">
+                        <img src="${chat.img}" alt="" />
+                        <p>${chat.message}<span class="float-right small text ml-2">${formattedTime}</span></p>
+                    </li>
+                `).appendTo($('.messages ul'));
+                $('#contacts .contact .wrap .meta #'+chat.to).html('<span>You: </span>' + chat.message);
+            } else {
+                $(`
+                    <li class="sent">
+				    <img src="${chat.img}" alt="" />
+				    <p>${chat.message}<span class="float-right small text ml-2">${formattedTime}</span></p>
+			        </li>
+                `).appendTo($('.messages ul'));
+		        $(`#${chat.from}`).html('<span></span>' + chat.message);
+            }
+        }
+        
+        $('.message-input input').val(null);
+        $(".messages").animate({ scrollTop: $(document).height() }, "fast");
+    })
+    
+    $(".messages").animate({ scrollTop: $(document).height() }, "fast");
+}
+
 function sendMessage() {
 	let message = $(".message-input input").val();
     let sendTo = $(".contact-profile .small.text.d-block").text();
@@ -21,7 +56,6 @@ function sendMessage() {
     const data = {
 		"from": from,
 		"to": sendTo,
-		"img" : img,
         "message": message,
         datetime: new Date()
     }

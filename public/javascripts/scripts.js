@@ -64,6 +64,7 @@ function showUserInMainPanel(user) {
 		$(".contact-profile p .small.text.d-block.mt-3").text(user.contactNo);
     	$(".messages ul").empty();
     	$(".messages ul").append('<li class="sent"><img src="' + user.img + '" alt="" /><p>' + user.preview + '</p></li>');
+		loadChats()
     }
 }
 

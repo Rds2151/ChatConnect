@@ -1,3 +1,5 @@
+const Server = require('../services/Server')
+const sobj = new Server()
 const userConnected = new Map();
 
 exports.addUserConnection = (socketId, phoneNumber) => {
@@ -29,11 +31,21 @@ const getUser = (phoneNumber) => {
     }
 };
 
-exports.sendMessage = (socket, data) => {
+exports.sendMessage = async (socket, data) => {
     const socketId = getUser(data.to);
     if (socketId === null && data.to.startsWith("room-")) {
         socket.to(data.to).emit("receive-message", data);
     } else if (socketId !== null) {
+        await sobj.appendChat(data)
         socket.to(socketId).emit("receive-message", data);
     }
 };
+
+exports.fetchChatMessage = async(detail) => {
+    try {
+        const result = await sobj.fetchChatMessage(detail)
+        return result
+    } catch (err) {
+        console.log(err.message)
+    }
+}

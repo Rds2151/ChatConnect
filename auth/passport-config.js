@@ -1,14 +1,15 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
-const users = require('../db/database').users
+const Server = require("../services/Server");
+const sobj = new Server();
 
 passport.use(
     new LocalStrategy(
         { usernameField: "contactNo" },
         async (contactNo, password, done) => {
             try {
-                const user = users.find(user => user.contactNo === contactNo);
+                const user = await sobj.getUserByContactNo(contactNo);
                 if (!user) {
                     return done(null, false, "No user found with that phone number");
                 }
@@ -31,7 +32,7 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (contactNo, done) => {
     try {
-        const user = users.find(user => user.contactNo === contactNo);
+        const user = await sobj.getUserByContactNo(contactNo)
         done(null, user);
     } catch (error) {
         done(error);
