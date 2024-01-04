@@ -12,9 +12,9 @@ onConnected = (socket) => {
 
     socket.on("join-room", (roomName) => socket.join("room-"+roomName));
 
-    socket.on("load-message",async (data,cb) => {
+    socket.on("load-message",async (data, onDataLoaded) => {
         const result = await fetchChatMessage(data)
-        if (result) cb(result)
+        if (result) onDataLoaded(result)
     })
 };
 
