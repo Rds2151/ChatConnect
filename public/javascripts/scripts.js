@@ -94,6 +94,7 @@ function sendMessage() {
     const data = {
 		"from": from,
 		"to": sendTo,
+		"img" : img,
         "message": message,
         datetime: new Date()
     }
@@ -114,7 +115,7 @@ function sendMessage() {
 };
 
 function receiveMessage(data) {
-    let imgSrc = $(".contact-profile img").attr("src");
+    let imgSrc = data.img
     let formattedTime = moment(data.datetime).format('hh:mm A');
 	let check = $(".contact-profile .small.text.d-block").text();
 	if(!($.trim(check) == '') || data.to.startsWith("room-")) {
