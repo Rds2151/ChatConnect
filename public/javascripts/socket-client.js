@@ -19,11 +19,11 @@ function sendMessage() {
 	}
 
     const data = {
-		"from": from,
-		"to": sendTo,
-		"img" : img,
-        	"message": message,
-        	datetime: new Date()
+	"from": from,
+	"to": sendTo,
+	"img" : img,
+        "message": message,
+        datetime: new Date()
     }
 
     socket.emit("send-message", data)
