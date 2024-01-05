@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema({
 const chatSchema = new mongoose.Schema({
     from: { type: String, required: true },
     to: { type: String, required: true },
+    img: { type: String, required: true },
     message: { type: String, required: true },
     datetime: { type: Date, default: Date.now },
 });

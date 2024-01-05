@@ -56,6 +56,7 @@ function sendMessage() {
     const data = {
 		"from": from,
 		"to": sendTo,
+        "img": img,
         "message": message,
         datetime: new Date()
     }
@@ -91,7 +92,6 @@ function receiveMessage(data) {
 		// Append the new message to the messages list
 		newMessage.appendTo($('.messages ul'));
 	}
-
 
     // Update the preview in the active contact
 	if (data.to && !data.to.startsWith("room-")) {
