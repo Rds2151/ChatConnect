@@ -10,26 +10,23 @@ function loadChats() {
     let to = $(".contact-profile .small.text.d-block").text();
 
     socket.emit('load-message', {from,to}, (data) => {
-        let img = data.img
         for (chat of data) {
             let formattedTime = moment(chat.datetime).format('hh:mm A');
             
             if (from == chat.from) {
-                $(`
-                    <li class="replies">
-                        <img src="${chat.img}" alt="" />
-                        <p>${chat.message}<span class="float-right small text ml-2">${formattedTime}</span></p>
-                    </li>
-                `).appendTo($('.messages ul'));
-                $('#contacts .contact .wrap .meta #'+chat.to).html('<span>You: </span>' + chat.message);
+                if (chat.type === "image") {
+                    displayImageMessage('replies', chat.img , chat.message)
+                } else {
+                    displayMessage('replies', chat.img, chat.message, formattedTime);
+                    $('#contacts .contact .wrap .meta #'+chat.to).html('<span>You: </span>' + chat.message);
+                }
             } else {
-                $(`
-                    <li class="sent">
-				    <img src="${chat.img}" alt="" />
-				    <p>${chat.message}<span class="float-right small text ml-2">${formattedTime}</span></p>
-			        </li>
-                `).appendTo($('.messages ul'));
-		        $(`#${chat.from}`).html('<span></span>' + chat.message);
+                if (chat.type === "image") {
+                    displayImageMessage('sent', chat.img , chat.message)
+                } else {
+                    displayMessage('sent', chat.img, chat.message, formattedTime);
+                    $(`#${chat.from}`).html('<span></span>' + chat.message);
+                }
             }
         }
         
@@ -40,66 +37,96 @@ function loadChats() {
     $(".messages").animate({ scrollTop: $(document).height() }, "fast");
 }
 
-function sendMessage() {
-	let message = $(".message-input input").val();
+function displayMessage (mode,imgSrc, message, time) {
+    let newMessage = $(
+        `<li class="${mode}">
+            <img src="${imgSrc}" alt="" />
+            <p>${message}
+                <span class="float-right small text ml-2">${time}</span>
+            </p>
+        </li>`
+    );
+    // Append the new message to the messages list
+    newMessage.appendTo($('.messages ul'));
+
+    $(".messages").animate({ scrollTop: $(document).height() }, "fast");
+}
+
+function displayImageMessage(mode, userImg, imageUrl) {
+    var messageContainer = $(".messages ul");
+
+    var messageHtml = `
+        <li class="${mode}">
+            <img src="${userImg}" alt="" />
+            <img src="${imageUrl}" alt="" class="message-image" />
+        </li>
+    `;
+    messageContainer.append(messageHtml);
+    $(".messages").animate({ scrollTop: $(document).height() }, "fast");
+}
+
+function sendMessage(imageData) {
+    let message = $(".message-input input").val();
     let sendTo = $(".contact-profile .small.text.d-block").text();
-	if($.trim(sendTo) == '') {
-		sendTo = "room-"+$(".contact-profile .name.mt-2").text();
-	}
     const from = $("#sidepanel #profile #expanded input").val();
-	let img = $("#profile-img").attr("src");
-
-	if($.trim(message) == '') {
-		return false;
+    let img = $("#profile-img").attr("src");
+    let data;
+    
+	if($.trim(sendTo) == '') {
+        sendTo = "room-"+$(".contact-profile .name.mt-2").text();
+	}
+    
+	if($.trim(message) == '' && imageData === null) {
+        return false;
 	}
 
-    const data = {
-		"from": from,
-		"to": sendTo,
-        "img": img,
-        "message": message,
-        datetime: new Date()
+    if (imageData === null) {
+        data = {
+            "from": from,
+            "to": sendTo,
+            "img": img,
+            "type": "text",
+            "message": message,
+            datetime: new Date()
+        }
+    } else {
+        data = {
+            "from": from,
+            "to": sendTo,
+            "img": img,
+            "type": "image",
+            "message": imageData,
+            datetime: new Date()
+        }
     }
 
     socket.emit("send-message", data)
-	let formattedTime = moment(data.datetime).format('hh:mm A');
-	$(`
-		<li class="replies">
-		    <img src="${img}" alt="" />
-    		<p>${data.message}<span class="float-right small text ml-2">${formattedTime}</span></p>
-		</li>
-      `).appendTo($('.messages ul'));
+
+    if (imageData === null) displayMessage('replies', img, data.message, moment(data.datetime).format('hh:mm A'));
+
 	$('.message-input input').val(null);
-	if (data.to && !data.to.startsWith("room-")) {
+	
+    if (data.to && !data.to.startsWith("room-")) {
 		$('#contacts .contact .wrap .meta #'+data.to).html('<span>You: </span>' + data.message);
 	}
-	$(".messages").animate({ scrollTop: $(document).height() }, "fast");
 };
 
 function receiveMessage(data) {
     let imgSrc = data.img
     let formattedTime = moment(data.datetime).format('hh:mm A');
 	let check = $(".contact-profile .small.text.d-block").text();
-	if(!($.trim(check) == '') || data.to.startsWith("room-")) {
-		let newMessage = $(
-			`<li class="sent">
-				<img src="${imgSrc}" alt="" />
-				<p>${data.message}
-					<span class="float-right small text ml-2">${formattedTime}</span>
-				</p>
-			</li>`
-		);	
-		// Append the new message to the messages list
-		newMessage.appendTo($('.messages ul'));
-	}
+	
+    if(!($.trim(check) == '') || data.to.startsWith("room-")) {
+        if (data.type === "image") {
+            displayImageMessage('sent', imgSrc , data.message)
+        } else {
+            displayMessage('sent', imgSrc, data.message, formattedTime);
+        }
+	} 
 
-    // Update the preview in the active contact
-	if (data.to && !data.to.startsWith("room-")) {
+	if (data.to && !data.to.startsWith("room-") && data.type === 'text') {
 		$(`#${data.from}`).html('<span></span>' + data.message);
 	}
-
-    // Scroll to the bottom of the messages
-    $(".messages").animate({ scrollTop: $(document).height() }, "fast");
 };
 
 $("#joinroom").on('click', () => {
@@ -119,12 +146,12 @@ $("#joinroom").on('click', () => {
 });
 
 $('.submit').click(function() {
-    sendMessage();
+    sendMessage(null);
 });
 
 $(window).on('keydown', function(e) {
   if (e.which == 13) {
-    sendMessage();
+    sendMessage(null);
     return false;
   }
 });

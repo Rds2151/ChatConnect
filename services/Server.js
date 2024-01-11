@@ -1,16 +1,34 @@
 const { User, Chat } = require("../db/database");
+const bcrypt = require('bcrypt')
 
 class Server {
+    
     getUserByContactNo = async (contactNo) => {
         try {
             const user = await User.findOne({ contactNo })
-
-            if (user !== null) return user;
+            return user;
         } catch (error) {
             console.error(error.message);
             throw new Error("User not found");
         }
     };
+
+    createAccount = async (data) => {
+        try {
+            const hashpassword = bcrypt.hashSync(data.Password, 10);
+            
+            const registerUser = new User({
+                "name": data.name,
+                "contactNo": data.contactNo,
+                "img": data.img,
+                preview: "Hey",
+                "Password": hashpassword
+            });
+            await registerUser.save()
+        } catch (err) {
+            throw { error: err.message, hasError: true };
+        }
+    }
 
     getUserById = async (id) => {
         try {
@@ -30,7 +48,6 @@ class Server {
             throw error;
         }
     };
-
     
     fetchChatMessage = async (detail) => {
         try {
@@ -55,6 +72,7 @@ class Server {
             const result = await chat.save()
             return result;
         } catch (error) {
+            console.error(error.message)
             throw error;
         }
     };

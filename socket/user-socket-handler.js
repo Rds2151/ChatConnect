@@ -32,7 +32,7 @@ const getUser = (phoneNumber) => {
 };
 
 exports.sendMessage = async (socket, data) => {
-    const socketId = getUser(data.to);
+    const socketId = getUser(data.from);
     if (socketId === null && data.to.startsWith("room-")) {
         socket.to(data.to).emit("receive-message", data);
     } else if (socketId !== null) {

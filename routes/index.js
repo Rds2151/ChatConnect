@@ -1,11 +1,11 @@
 var express = require("express");
 var router = express.Router();
-const users = require("../db/database").users;
 const requireAuth = require("../auth/loginAuthentication");
 const passport = require("passport");
 const flash = require("connect-flash");
 const Server = require('../services/Server')
 const sobj = new Server()
+const { register } = require('../controller/register')
 
 router.use(flash());
 
@@ -27,13 +27,33 @@ router.get("/login", (req, res, next) => {
     res.render("login", { messages: result });
 });
 
+router.get("/register", async (req, res, next) => {
+    let data = req.flash();
+    if (data.error) result = [data.error, true];
+    else result = data.messages;
+
+    res.render("registration", { messages: result });
+});
+
+router.post("/register", async (req, res, next) => {
+    const data = req.body;
+    
+    const result = await register(data);
+    if (result.hasError) {
+        res.render("registration", {"message":result.error});
+    } else {
+		req.flash("messages", [result.message, false]);
+		res.redirect("/login");
+	}
+});
+
 router.get("/index", async (req, res, next) => {
     const user = req.user;
     const usersData = await sobj.fetchAllUser()
     res.render("index", { user: user, contacts: usersData });
 });
 
-router.get("/test", function (req, res, next) {
+router.get("/test", async (req, res, next) => {
     res.render("test");
 });
 

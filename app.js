@@ -7,7 +7,7 @@ const session = require("express-session");
 const passport = require("passport");
 const mongoose = require('mongoose')
 
-const dbUrl = "mongodb+srv://testUser:jMbe6l1aYOFlYN3z@cluster0.tn0kznx.mongodb.net/ChatConnect?retryWrites=true&w=majority"
+const dbUrl = "mongodb+srv://newUser:W4qQlticjNhMUCWn@cluster0.tn0kznx.mongodb.net/ChatConnect?retryWrites=true&w=majority"
 
 mongoose.connect(dbUrl)
   .then((result) => {

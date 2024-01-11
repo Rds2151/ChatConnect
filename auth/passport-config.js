@@ -10,7 +10,7 @@ passport.use(
         async (contactNo, password, done) => {
             try {
                 const user = await sobj.getUserByContactNo(contactNo);
-                if (!user) {
+                if (user == null) {
                     return done(null, false, "No user found with that phone number");
                 }
             
