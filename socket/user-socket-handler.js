@@ -33,11 +33,12 @@ const getUser = (phoneNumber) => {
 
 exports.sendMessage = async (socket, data) => {
     const socketId = getUser(data.from);
-    if (socketId === null && data.to.startsWith("room-")) {
+    if (data.to.startsWith("room-")) {
         socket.to(data.to).emit("receive-message", data);
     } else if (socketId !== null) {
         await sobj.appendChat(data)
-        socket.to(socketId).emit("receive-message", data);
+        const receiver = getUser(data.to);
+        socket.to(receiver).emit("receive-message", data);
     }
 };
 

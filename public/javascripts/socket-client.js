@@ -5,36 +5,36 @@ socket.on('connect', () => {
 	socket.emit('addPhoneNumber', from);
 });
 
+var docHeight = $(document).height();
+
 function loadChats() {
     const from = $("#sidepanel #profile #expanded input").val();
     let to = $(".contact-profile .small.text.d-block").text();
 
-    socket.emit('load-message', {from,to}, (data) => {
+    socket.emit('load-message', {from, to}, (data) => {
         for (chat of data) {
             let formattedTime = moment(chat.datetime).format('hh:mm A');
-            
+
             if (from == chat.from) {
                 if (chat.type === "image") {
-                    displayImageMessage('replies', chat.img , chat.message)
+                    displayImageMessage('replies', chat.img, chat.message);
                 } else {
                     displayMessage('replies', chat.img, chat.message, formattedTime);
-                    $('#contacts .contact .wrap .meta #'+chat.to).html('<span>You: </span>' + chat.message);
+                    $('#contacts .contact .wrap .meta #' + chat.to).html('<span>You: </span>' + chat.message);
                 }
             } else {
                 if (chat.type === "image") {
-                    displayImageMessage('sent', chat.img , chat.message)
+                    displayImageMessage('sent', chat.img, chat.message);
                 } else {
                     displayMessage('sent', chat.img, chat.message, formattedTime);
                     $(`#${chat.from}`).html('<span></span>' + chat.message);
                 }
             }
+            docHeight += 93
         }
-        
-        $('.message-input input').val(null);
-        $(".messages").animate({ scrollTop: $(document).height() }, "fast");
-    })
-    
-    $(".messages").animate({ scrollTop: $(document).height() }, "fast");
+
+        $(".messages").animate({ scrollTop: docHeight }, "fast");
+    });
 }
 
 function displayMessage (mode,imgSrc, message, time) {
@@ -48,8 +48,6 @@ function displayMessage (mode,imgSrc, message, time) {
     );
     // Append the new message to the messages list
     newMessage.appendTo($('.messages ul'));
-
-    $(".messages").animate({ scrollTop: $(document).height() }, "fast");
 }
 
 function displayImageMessage(mode, userImg, imageUrl) {
@@ -62,7 +60,6 @@ function displayImageMessage(mode, userImg, imageUrl) {
         </li>
     `;
     messageContainer.append(messageHtml);
-    $(".messages").animate({ scrollTop: $(document).height() }, "fast");
 }
 
 function sendMessage(imageData) {
@@ -109,14 +106,16 @@ function sendMessage(imageData) {
     if (data.to && !data.to.startsWith("room-")) {
 		$('#contacts .contact .wrap .meta #'+data.to).html('<span>You: </span>' + data.message);
 	}
+    docHeight += 93
+    $(".messages").animate({ scrollTop: docHeight }, "fast");
 };
 
 function receiveMessage(data) {
     let imgSrc = data.img
     let formattedTime = moment(data.datetime).format('hh:mm A');
 	let check = $(".contact-profile .small.text.d-block").text();
-	
-    if(!($.trim(check) == '') || data.to.startsWith("room-")) {
+    console.log(data.to.startsWith("room-"))
+    if(check === data.from || data.to.startsWith("room-")) {
         if (data.type === "image") {
             displayImageMessage('sent', imgSrc , data.message)
         } else {
@@ -127,6 +126,8 @@ function receiveMessage(data) {
 	if (data.to && !data.to.startsWith("room-") && data.type === 'text') {
 		$(`#${data.from}`).html('<span></span>' + data.message);
 	}
+    docHeight += 93
+    $(".messages").animate({ scrollTop: docHeight }, "fast");
 };
 
 $("#joinroom").on('click', () => {
