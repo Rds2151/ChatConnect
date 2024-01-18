@@ -1,5 +1,10 @@
 # Chat Connect
 
+## Test Usage
+To explore and test Chat Connect, you can visit the following link:
+
+👉 Explore the live chat: [Chat Connect Demo](https://chat-connect-ps95.onrender.com/)
+
 ## Database Information
 
 The data in the database is stored using the following Mongoose schemas in `db/database.js`:
