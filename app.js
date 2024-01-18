@@ -6,6 +6,7 @@ const indexRoutes = require("./routes/index");
 const session = require("express-session");
 const passport = require("passport");
 const mongoose = require('mongoose');
+const MongoStore = require('connect-mongo')
 require('dotenv').config();
 
 if (!process.env.MONGODB_URL) {
@@ -25,9 +26,12 @@ app.use(bodyparser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
 const sessionMiddleware = session({
-    secret: "random cat",
+    secret: process.env.secret,
     resave: true,
     saveUninitialized: true,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGODB_URL
+    })
 });
 
 app.use(sessionMiddleware);
