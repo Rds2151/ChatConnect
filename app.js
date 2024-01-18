@@ -6,10 +6,11 @@ const indexRoutes = require("./routes/index");
 const session = require("express-session");
 const passport = require("passport");
 const mongoose = require('mongoose');
+require('dotenv').config();
 
 if (!process.env.MONGODB_URL) {
   console.error('MONGODB_URL environment variable not set.');
-  process.exit(1); // Exit the application if MONGODB_URL is not set
+  process.exit(1);
 }
 
 mongoose.connect(process.env.MONGODB_URL)
