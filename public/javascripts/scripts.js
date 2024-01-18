@@ -75,7 +75,14 @@ function showUserInMainPanel(user) {
 }
 
 function logout() {
-    window.location.href = "http://localhost:3000/logout";
+    // Get the current base URL
+    const baseURL = window.location.origin;
+
+    // Construct the logout URL by appending the logout path
+    const logoutURL = `${baseURL}/logout`;
+
+    // Redirect to the logout URL
+    window.location.href = logoutURL;
 }
 
 function selectFile(e) {
