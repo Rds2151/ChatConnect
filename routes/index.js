@@ -53,10 +53,6 @@ router.get("/index", async (req, res, next) => {
     res.render("index", { user: user, contacts: usersData });
 });
 
-router.get("/test", async (req, res, next) => {
-    res.render("test");
-});
-
 router.post(
     "/login",
     passport.authenticate("local", {
@@ -70,12 +66,21 @@ router.post(
 );
 
 router.get("/logout", (req, res, next) => {
-    req.logOut((err) => {
-        if (err) {
-            return next(err);
-        }
+    const mongoStore = req.sessionStore;
+
+    if (req.session) {
+        mongoStore.destroy(req.sessionID, (err) => {
+            if (err) {
+                return next(err)
+            }
+
+            req.session = null;
+            res.redirect("/users/login");
+        });
+        
+    } else {
         res.redirect("/users/login");
-    });
+    }
 });
 
 module.exports = router;
