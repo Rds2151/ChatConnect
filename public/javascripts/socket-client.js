@@ -122,7 +122,7 @@ function receiveMessage(data) {
         } else {
             displayMessage('sent', imgSrc, data.message, formattedTime);
         }
-	} 
+	}
 
 	if (data.to && !data.to.startsWith("room-") && data.type === 'text') {
 		$(`#${data.from}`).html('<span></span>' + data.message);

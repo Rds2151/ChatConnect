@@ -9,7 +9,7 @@ const mongoose = require('mongoose')
 
 const dbUrl = "mongodb+srv://newUser:W4qQlticjNhMUCWn@cluster0.tn0kznx.mongodb.net/ChatConnect?retryWrites=true&w=majority"
 
-mongoose.connect(dbUrl)
+mongoose.connect(process.env.MONGODB_URL)
   .then((result) => {
     console.log("Connected Successfully...")
   }) .catch((error) => {
@@ -35,6 +35,7 @@ require("./auth/passport-config");
 app.use("/", indexRoutes);
 
 const port = process.env.PORT || 3000;
+
 const server = app.listen(port, () =>
     console.log(`Listening on the port ${port}...`)
 );
