@@ -114,7 +114,7 @@ function receiveMessage(data) {
     let imgSrc = data.img
     let formattedTime = moment(data.datetime).format('hh:mm A');
 	let check = $(".contact-profile .small.text.d-block").text();
-    console.log(data.to.startsWith("room-"))
+    
     if(check === data.from || data.to.startsWith("room-")) {
         if (data.type === "image") {
             displayImageMessage('sent', imgSrc , data.message)

@@ -1,5 +1,6 @@
 const Server = require("../services/Server");
 const client = require("../redis-conf");
+const { ReconnectStrategyError } = require("redis");
 const sobj = new Server();
 
 exports.addUserConnection = (socketId, phoneNumber) => {
@@ -26,14 +27,18 @@ const getUser = (phoneNumber) => {
 };
 
 exports.sendMessage = async (socket, data) => {
-    const socketId = await getUser(data.from);
+    console.log('3001',data)
     if (data.to.startsWith("room-")) {
         socket.to(data.to).emit("receive-message", data);
-    } else if (socketId !== null) {
-        await sobj.appendChat(data)
+    } else {
+        sobj.appendChat(data)
         const receiver = await getUser(data.to);
         socket.to(receiver).emit("receive-message", data);
     }
+};
+
+exports.publishMessage = async (data) => {
+    client.publish("MESSAGES", JSON.stringify(data));
 };
 
 exports.fetchChatMessage = async (detail) => {
