@@ -22,32 +22,46 @@ REDIS_PASSWORD="your_redis_password"
 REDIS_URL="redis://your_redis_host"
 REDIS_PORT=your_redis_port
 ```
-
 ---
 
 ## Quick Start Guide
 
 To execute the code from the GitHub repository, follow these steps:
 
-1. **Run Docker Container**:
-
+1. **Clone Repository**:
    ```bash
-   docker run -d -p 3000:3000 rds2151/chat-connect:1.0
+   git clone <repository_url>
    ```
 
-   or
+2. **Navigate to Directory**:
+   ```bash
+   cd ChatConnect
+   ```
+
+3. **Run Docker Compose**:
 
    ```bash
    docker-compose up
    ```
 
-2. **Access Application**:
+   If you want to run it in detached mode, use:
+   ```bash
+   docker-compose up -d
+   ```
+
+4. **Stop Docker Compose**:
+
+   ```bash
+   docker-compose down
+   ```
+
+5. **Access Application**:
 
    Open your web browser and go to `http://localhost:3000`.
 
 That's it! You're ready to use the application. If you encounter any issues, feel free to ask for help.
 
----
+--- 
 
 ## Database Information
 
