@@ -5,6 +5,24 @@ To explore and test Chat Connect, you can visit the following link:
 
 👉 Explore the live chat: [Chat Connect Demo](https://chat-connect-ps95.onrender.com/)
 
+### Setting Up .env File for Chat-Connect Application
+
+Follow these steps to set up the `.env` file for your Chat-Connect application:
+
+1. **Create the `.env` file**: If you haven't already, create a file named `.env` in the root directory of your Chat-Connect application.
+
+2. **Define Environment Variables**:
+
+Add the following environment variables to your `.env` file:
+
+```plaintext
+ME_CONFIG_MONGODB_URL="mongodb://your_mongodb_host:your_mongodb_port/your_database_name"
+SECRET="your_secret_key"
+REDIS_PASSWORD="your_redis_password"
+REDIS_URL="redis://your_redis_host"
+REDIS_PORT=your_redis_port
+```
+
 ## Database Information
 
 The data in the database is stored using the following Mongoose schemas in `db/database.js`:
