@@ -27,17 +27,23 @@ REDIS_PORT=your_redis_port
 
 ## Quick Start Guide
 
-To execute the code from the GitHub repository, proceed with the following steps:
+To execute the code from the GitHub repository, follow these steps:
 
 1. **Run Docker Container**:
 
-```bash
-docker run -d -p 3000:3000 rds2151/chat-connect:1.0
-```
+   ```bash
+   docker run -d -p 3000:3000 rds2151/chat-connect:1.0
+   ```
+
+   or
+
+   ```bash
+   docker-compose up
+   ```
 
 2. **Access Application**:
 
-Open your web browser and go to `http://localhost:3000`.
+   Open your web browser and go to `http://localhost:3000`.
 
 That's it! You're ready to use the application. If you encounter any issues, feel free to ask for help.
 
