@@ -30,7 +30,7 @@ To execute the code from the GitHub repository, follow these steps:
 
 1. **Clone Repository**:
    ```bash
-   git clone <repository_url>
+   git clone https://github.com/Rds2151/ChatConnect.git
    ```
 
 2. **Navigate to Directory**:
