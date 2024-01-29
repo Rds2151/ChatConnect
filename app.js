@@ -9,12 +9,10 @@ const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo')
 require('dotenv').config();
 
-if (!process.env.MONGODB_URL) {
-  console.error('MONGODB_URL environment variable not set.');
-  process.exit(1);
-}
+const SECRET = process.env.SECRET || 'hey';
+const MONGODB_URL = process.env.MONGODB_URL
 
-mongoose.connect(process.env.MONGODB_URL)
+mongoose.connect(MONGODB_URL)
   .then((result) => {
     console.log("Connected Successfully...")
   }) .catch((error) => {
@@ -26,11 +24,11 @@ app.use(bodyparser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
 const sessionMiddleware = session({
-    secret: process.env.secret,
+    secret: SECRET,
     resave: true,
     saveUninitialized: true,
     store: MongoStore.create({
-      mongoUrl: process.env.MONGODB_URL
+      mongoUrl: MONGODB_URL
     })
 });
 
@@ -42,11 +40,9 @@ require("./auth/passport-config");
 
 app.use("/", indexRoutes);
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3000;
 
-const server = app.listen(port, () =>
-    console.log(`Listening on the port ${port}...`)
-);
+const server = app.listen(port, () => console.log(`Listening on the port ${port}...`));
 
 module.exports = server
 

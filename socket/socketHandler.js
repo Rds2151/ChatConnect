@@ -1,38 +1,13 @@
 const server = require("../app");
 const io = require("socket.io")(server);
-const redis = require("redis");
 const { addUserConnection, deleteUserConnection, sendMessage, publishMessage, fetchChatMessage, } = require("./user-socket-handler");
-
-const subscriber = redis.createClient({
-    password: process.env.REDIS_PASSWORD,
-    socket: {
-        host: process.env.REDIS_URL,
-        port: process.env.REDIS_PORT,
-    },
-});
-
-subscriber
-    .connect()
-    .then(() => {
-        console.log("Connected to Redis server : Subscriber");
-    })
-    .catch((error) => {
-        console.error("Error connecting to Redis:", error);
-    });
-
-subscriber.on("error", function (error) {
-    console.error("Subscriber Error:", error);
-});
+const subscriber = require('../redis/redis-subscriber')
 
 onConnected = (socket) => {
     // Subscribe to a channel
-    subscriber.subscribe("MESSAGES", function (message) {
-        sendMessage(socket, JSON.parse(message));
-    });
+    subscriber.subscribe("MESSAGES", (message) => sendMessage(socket, JSON.parse(message)));
 
-    socket.on("addPhoneNumber", (phoneNumber) =>
-        addUserConnection(socket.id, phoneNumber)
-    );
+    socket.on("addPhoneNumber", (phoneNumber) => addUserConnection(socket.id, phoneNumber));
 
     socket.on("disconnect", () => deleteUserConnection(socket.id));
 
