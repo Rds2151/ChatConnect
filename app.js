@@ -10,7 +10,8 @@ const MongoStore = require('connect-mongo')
 require('dotenv').config();
 
 const SECRET = process.env.SECRET || 'hey';
-const MONGODB_URL = process.env.MONGODB_URL
+
+const MONGODB_URL = process.env.ME_CONFIG_MONGODB_URL
 
 mongoose.connect(MONGODB_URL)
   .then((result) => {
