@@ -1,4 +1,4 @@
-FROM node:alphine
+FROM node:20-alpine
 
 WORKDIR /ChatConnect
 
